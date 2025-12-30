@@ -26,6 +26,7 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { cn } from "@/lib/utils"
 
 const roleData = {
     superadmin: {
@@ -84,12 +85,14 @@ export function AppSidebar({ role, ...props }: AppSidebarProps) {
     const { setTheme } = useTheme()
 
     React.useEffect(() => {
+        let t: NodeJS.Timeout
         if (isHovering || isMenuOpen) {
             setOpen(true)
         } else {
-            const t = setTimeout(() => setOpen(false), 600)
-            return () => clearTimeout(t)
+            // Enhanced delayed collapse for smoother interaction
+            t = setTimeout(() => setOpen(false), 400) // Increased delay to 400ms
         }
+        return () => clearTimeout(t)
     }, [isHovering, isMenuOpen, setOpen])
 
     return (
@@ -160,15 +163,24 @@ export function AppSidebar({ role, ...props }: AppSidebarProps) {
                             <SidebarMenu>
                                 {data.items.map((item) => (
                                     <SidebarMenuItem key={item.title}>
-                                        <SidebarMenuButton asChild isActive={pathname === item.url} tooltip={item.title} className="h-11 rounded-xl font-bold uppercase tracking-tight data-[active=true]:bg-primary/10 data-[active=true]:text-primary transition-all">
+                                        <SidebarMenuButton asChild isActive={pathname === item.url} tooltip={item.title} className="h-11 rounded-xl font-bold uppercase tracking-tight data-[active=true]:bg-primary/10 data-[active=true]:text-primary transition-all overflow-hidden group/menu-item">
                                             <motion.div
-                                                whileHover={{ x: 5, scale: 1.02 }}
+                                                initial={false}
+                                                whileHover={{ x: 4, backgroundColor: "rgba(var(--primary), 0.05)" }}
                                                 whileTap={{ scale: 0.98 }}
-                                                className="w-full flex items-center gap-2"
+                                                className="w-full flex items-center gap-2 relative z-10"
                                             >
-                                                <Link href={item.url} className="flex items-center gap-2 w-full">
-                                                    <item.icon className="scale-110" />
-                                                    <span>{item.title}</span>
+                                                <Link href={item.url} className="flex items-center gap-2 w-full p-1">
+                                                    {/* Active Indicator Line */}
+                                                    {pathname === item.url && (
+                                                        <motion.div
+                                                            layoutId="active-nav-indicator"
+                                                            className="absolute left-0 w-1 h-6 bg-primary rounded-r-full"
+                                                            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                                                        />
+                                                    )}
+                                                    <item.icon className={cn("transition-transform duration-300 group-hover/menu-item:scale-110", pathname === item.url ? "text-primary" : "text-muted-foreground group-hover/menu-item:text-primary")} />
+                                                    <span className={cn("transition-colors", pathname === item.url ? "text-primary" : "text-foreground group-hover/menu-item:text-primary")}>{item.title}</span>
                                                 </Link>
                                             </motion.div>
                                         </SidebarMenuButton>

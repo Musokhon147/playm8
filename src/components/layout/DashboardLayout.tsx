@@ -1,6 +1,7 @@
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/dashboard/sidebar"
 import { Header } from "@/components/dashboard/header"
+import PageTransition from "@/components/layout/page-transition"
 
 interface DashboardLayoutProps {
     children: React.ReactNode
@@ -21,7 +22,9 @@ export function DashboardLayout({ children, role }: DashboardLayoutProps) {
             <SidebarInset>
                 <Header roleName={roleNames[role]} />
                 <main className="flex-1 p-6 md:p-8 space-y-6">
-                    {children}
+                    <PageTransition>
+                        {children}
+                    </PageTransition>
                 </main>
             </SidebarInset>
         </SidebarProvider>

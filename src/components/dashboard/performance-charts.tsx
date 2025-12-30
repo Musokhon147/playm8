@@ -101,11 +101,17 @@ export function ActivityMap() {
                             return (
                                 <motion.div
                                     key={d}
-                                    initial={{ opacity: 0, scale: 0.8 }}
+                                    initial={{ opacity: 0, scale: 0.5 }}
                                     animate={{ opacity: 1, scale: 1 }}
-                                    transition={{ delay: (w * 0.05) }}
+                                    transition={{
+                                        delay: w * 0.05 + d * 0.01,
+                                        duration: 0.4,
+                                        type: "spring",
+                                        stiffness: 260,
+                                        damping: 20
+                                    }}
                                     className={cn(
-                                        "size-3 rounded-[3px] transition-colors",
+                                        "size-3 rounded-[3px] transition-colors hover:scale-150 hover:z-10 relative cursor-none",
                                         level === 0 && "bg-accent/5",
                                         level === 1 && "bg-primary/20",
                                         level === 2 && "bg-primary/40",
